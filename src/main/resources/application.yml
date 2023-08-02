@@ -1,0 +1,29 @@
+# Logging Level Configuration
+logging :
+  level :
+    org :
+      edupoll : debug
+  
+# Spring Configuration  
+spring :
+  mustache :
+    servlet :
+     expose-session-attributes : true
+  datasource :
+    url : jdbc:mysql://onyu.cxp0cbuj44al.ap-northeast-2.rds.amazonaws.com/Moim
+    username : admin
+    password : 1q2w3e4r
+  jpa:
+    hibernate:
+      ddl-auto: update
+  mvc :
+    format :
+      date : yyyy-MM-dd
+
+    
+server :
+  servlet :
+    encoding :
+      force : true
+    
+   

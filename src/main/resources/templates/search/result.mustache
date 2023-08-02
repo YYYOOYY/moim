@@ -1,0 +1,101 @@
+{{> /common/header }}
+<div class="py-2 border-bottom">
+	<h5 class="fs-5">#찾아낸 정보를 확인해보세요</h5>
+</div>
+<div class="bg-body rounded shadow-sm p-2">
+	<h6 class="border-bottom pb-2">#검색정보</h6>
+	{{#users}}
+	<div class="d-flex text-body-seconadry py-1 align-items-center">
+		{{#avatarUrl}}
+			<img src="{{.}}" style="width: 40px" class="me-2" />
+		{{/avatarUrl}}
+		{{^avatarUrl}}
+			<i class="bi bi-person-square me-2 fs-1 px-1"></i>
+		{{/avatarUrl}}
+		<div>
+			<b class="text-gary-dark fs-6">@{{id}}</b> 
+			<small>{{nick}}</small> - since {{joinDay }} ({{joinTime}})
+		</div>
+		{{#logon}}
+			{{#follow}}
+				<span class="mx-2 btn"><i class="follow bi bi-heart-fill text-danger" data-status="following" data-id="{{id}}"></i></span>
+			{{/follow}}
+			{{^follow}}
+				<span class="mx-2 btn"><i class="follow bi bi-heart text-danger" data-status="un-follow" data-id="{{id}}"></i></span>
+			{{/follow}}
+		{{/logon}}
+		{{^logon}}
+		<span class="mx-2 btn"><i class="bi bi-heart text-danger" onclick="location.href='/user/login'"></i></span>
+		{{/logon}}
+	</div>
+	<div class="targetId" style="display: none;">{{id}}</div>
+
+	{{/users}}
+	<script>
+		document.querySelectorAll(".follow").forEach(elm => {
+			elm.onclick = (evt) => {
+				const status = evt.target.dataset.status;
+				const id = evt.target.dataset.id;
+				console.log(status);
+				if(status === 'un-follow') {
+					const xhr = new XMLHttpRequest();
+					xhr.open("post","/api/follow/add",false);
+					xhr.setRequestHeader("content-type", "application/x-www-form-urlencoded");
+					xhr.send("targetId="+id);
+					const obj = JSON.parse(xhr.responseText);
+					if(obj.result) {
+						elm.dataset.status="following";
+						elm.classList.remove("bi-heart");
+						elm.classList.add("bi-heart-fill");
+					}else {
+						window.alert(obj.message);
+					}
+				}else {
+					const xhr = new XMLHttpRequest();
+					xhr.open("post","/api/follow/delete",false);
+					xhr.setRequestHeader("content-type", "application/x-www-form-urlencoded");
+					xhr.send("targetId="+id);
+					const obj = JSON.parse(xhr.responseText);
+					if(obj.result) {
+						elm.dataset.status="un-follow";
+						elm.classList.add("bi-heart");
+						elm.classList.remove("bi-heart-fill");
+					}else{
+						window.alert(obj.message);
+					}
+				}
+					
+			};
+		});
+	</script>
+	{{#emptyUsers}}
+		<b>{{.}}</b>
+	{{/emptyUsers}}
+	{{#emptyMoims}}
+		<b>{{.}}</b>
+	{{/emptyMoims}}
+</div>
+<div class="flex-wrap row p-3">
+	{{#moims}}
+	<div class="col-lg-3 px-1 py-2" onclick="location.href='/moim/detail?moimId={{id}}'" style="cursor: pointer">
+		<div class="card">
+			<div class="card-header">
+				<span class="card-subtitle text-body-secondary ">{{cate}}</span>
+			</div>
+			<div class="card-body">
+				<h5 class="card-title mb-2">{{title}}</h5>
+				<p class="card-text" style="height: 40px; font-size: 0.9rem">{{description}}</p>
+			</div>
+			<div class="card-footer">
+				<span>모임날짜 : {{targetDate}}</span>
+			</div>
+		</div>
+	</div>
+	{{/moims}}
+</div>
+	<ul class="pagination paginatio-sm">
+		{{#pages}}
+		<li class="page-item"><a href="/search?keyword={{keyword}}&q={{q}}&page={{.}}" class="page-link">{{.}}</a></li>
+		{{/pages}}
+	</ul>
+{{ > /common/footer }}

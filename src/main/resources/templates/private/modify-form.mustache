@@ -1,0 +1,78 @@
+{{> /common/header }}
+<div class="container">
+    <div class="my-2 p-2">
+        <h2>회원정보</h2>
+    </div>
+    <div class="container">
+        {{#error}}
+        <div class="alert alert-danger alert-dismissible" role="alert">
+            이미 가입된 아이디이거나 혹은 일시적인 장애로 인해 회원가입에 실패했습니다.
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {{/error}}
+        <form action="/private/modify" method="post">
+            <div class="mb-1 text-center">
+                {{#savedDetail.avatar }}
+                <img src="{{#url}}{{.}}{{/url}}" style="max-width: 50%; width: 20%; height: 20%;" class="rounded img-thumbnail"
+                    alt="...">
+                {{/savedDetail.avatar }}
+                {{^savedDetail.avatar }}
+                <img src="" style="max-width: 50%" class="rounded img-thumbnail" alt="...">
+                {{/savedDetail.avatar }}
+            </div>
+            <div class="mb-1">
+                <label class="form-labal">아바타</label>
+                <div style="display: none;" id="savedDetailAvatar">{{#savedDetail.avatar.id}}{{.}}{{/savedDetail.avatar.id}}</div>
+                <select name="avatar.id">
+                    <option value="m1" class="a">남자1</option>
+                    <option value="m2" class="a">남자2</option>
+                    <option value="m3" class="a">남자3</option>
+                    <option value="w1" class="a">여자1</option>
+                    <option value="w2" class="a">여자2</option>
+                    <option value="w3" class="a">여자3</option>
+                </select>
+            </div>
+            <div class="mb-1">
+                <label class="form-labal">자기소개</label>
+                <textarea name="description" class="form-control"
+                    placeholder="자기소개를 작성해주세요.">{{#savedDetail.description}}{{.}}{{/savedDetail.description}}</textarea>
+            </div>
+            <div class="mb-1">
+                <label class="form-labal">주소</label>
+                <input type="text" name="address" class="form-control"
+                    value="{{#savedDetail.address}}{{.}}{{/savedDetail.address}}" placeholder="주소를 입력해주세요." />
+            </div>
+            <div class="mb-4">
+                <label class="form-labal">생일</label>
+                <input type="date" name="birthday" class="form-control" value="{{#birthday}}{{.}}{{/birthday}}" />
+            </div>
+            <div class="d-flex justify-content-between">
+                <button type="submit" class="btn btn-success">수정</button>
+                <button type="button" class="btn btn-danger" id="del-bt">회원탈퇴</button>
+            </div>
+        </form>
+    </div>
+    <script>
+        document.querySelector("#del-bt").onclick = function (evt) {
+            if (confirm("회원탈퇴를 진행하시겠습니까?\n회원탈퇴시 데이터는 모두 삭제됩니다.")) {
+                location.href = "/user/delete"
+            }
+        };
+
+        // savedDetail.avatar 값 가져오기
+        var savedAvatar = document.querySelector("#savedDetailAvatar").textContent;
+
+        // select 요소 가져오기
+        var selectElement = document.querySelector("select[name='avatar.id']");
+
+        // 각 옵션을 순회하면서 일치하는 값인지 확인하고 선택 상태 설정
+        for (var i = 0; i < selectElement.options.length; i++) {
+            var option = selectElement.options[i];
+            if (option.value === savedAvatar) {
+                option.selected = true;
+                break; // 일치하는 옵션을 찾으면 반복문 종료
+            }
+        }
+    </script>
+</div>
+{{> /common/footer }}

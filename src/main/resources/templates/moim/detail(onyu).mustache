@@ -1,0 +1,95 @@
+{{> /common/header }}
+<div class="py-2 border-bottom d-flex justify-content-between mb-2">
+	<h5 class="fs-5">#새로운 경험과 친구들이 기다리고 있습니다.</h5>
+</div>
+{{#moim }}
+<div class="p-2 mb-2 bg-light rounded-3">
+	<div class="container-fluid py-2">
+		<div class="d-flex align-items-center mb-2">
+			{{#manager.userDetail.avatar.url }} <img src="{{.}}" style="width: 48px" class="me-2" />
+			{{/manager.userDetail.avatar.url }}
+			<div class="fs-5 text-warning">@{{manager.id
+				}}({{manager.nick}}) 님의 모임
+				<span class="badge bg-warning">{{currentPerson}} /
+					{{#maxPerson }}{{.}}{{/maxPerson}}
+					{{^maxPerson }}제한없음{{/maxPerson}}
+				</span>
+			</div>
+		</div>
+
+		<h1 class="fw-bold">
+			{{title}} <small class="fs-6 text-secondary">{{cate}}</small>
+		</h1>
+		<p class="fs-4">{{description }}</p>
+		<p class="text-end text-black-80 fs-smaller">
+			모임 예정일 : {{targetDate }} ({{duration}}h 모임예정)
+		</p>
+		<div onclick="location.href='/moim/attendance?moimId={{moim.id}}'"
+			style="cursor: pointer; border: 1px solid black; background-color: black; color: white; width: 86px;"
+			id="join">
+			<small id="target">{{status}}</small>
+		</div>
+	</div>
+</div>
+{{/moim }}
+<div class="mb-2 text-end">
+	<span class="badge bg-secondary fs-6">@{{moim.manager.id}}</span>
+	{{#moim.attendances }}
+	<span class="badge bg-secondary fs-6">@{{user.id }}</span>
+	{{/moim.attendances }}
+</div>
+<!-- 리플 등록용 Form -->
+<div class="mb-3 border-bottom pb-2">
+	<form action="/reply/create" method="post">
+		<input type="hidden" name="moimId" value="{{moim.id}}" />
+		<div class="mb-2">
+			<textarea class="form-control form-control-sm" placeholder="문의 글을 남겨주세요." name="text" rows="3"></textarea>
+		</div>
+		<div class="row g-2 align-items-center justify-content-end">
+			<div class="col-auto">
+				<input type="password" class="form-control form-control-sm" name="password" placeholder="비밀번호를 설정해주세요">
+			</div>
+			<div class="col-auto">
+				<button class="btn btn-dark text-white btn-sm">문의 등록</button>
+			</div>
+		</div>
+	</form>
+</div>
+<!-- 모임에 달린 리플 보여주기 영역 -->
+<table class="table table-sm">
+	<thead class="table-dark">
+		<tr>
+			<th scope="col" class="col-11">#</th>
+			<th scope="col" class="col-1"></th>
+		</tr>
+	</thead>
+	<tbody>
+		{{#moim.replys }}
+		<tr>
+			<td class="align-middle">{{text}}</td>
+			<td>
+				<button class="btn btn-danger btn-sm">
+					<i class="bi bi-trash3"></i>
+				</button>
+			</td>
+		</tr>
+		{{/moim.replys }}
+	</tbody>
+</table>
+<!-- <script>
+	document.querySelector("#join").onclick = (evt) => {
+		const xhr = new XMLHttpRequest();
+		xhr.open("post", "/moim/attendance", false);
+		xhr.setRequestHeader("content-type", "application/x-www-form-urlencoded");
+		xhr.send("moimId={{moim.id}}");
+
+		const txt = xhr.responseText;
+
+		const response = JSON.parse(txt);
+ 	  	const status = response.status;
+
+  	 	 const targetElement = document.querySelector("#target");
+     	 targetElement.innerHTML = status;
+	}
+</script> -->
+{{ > /common/footer }}
